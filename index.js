@@ -51,10 +51,18 @@ function paintBackground() {
     context.strokeRect(0,0,canvas.width, canvas.height);
 }
 
+function GetRandomNumberBetween(lo, hi) {
+  return Math.floor(lo + Math.random() * (hi - lo));
+}
+Number.prototype.FindClosestNumberThatIsDivisibleBy = function(n) {
+  return Math.round(this / n) * n; //simplify as per Guffa
+};
+
 function createSnakeFood() {
-    var randomY = Math.floor((Math.random() * self.canvas.height) + 1);
-    var randomX = Math.floor((Math.random() * self.canvas.width) + 1);
-    var snakeFood = new Segment(randomX,randomY);
+    var randomY = GetRandomNumberBetween(0,self.canvas.height);
+    var randomX = GetRandomNumberBetween(0,self.canvas.width);
+    var snakeFood = new Segment(randomX.FindClosestNumberThatIsDivisibleBy(self.options.snakeSize),randomY.FindClosestNumberThatIsDivisibleBy(self.options.snakeSize));
+    console.log("snakeFood",snakeFood);
     return snakeFood;
 }
 
@@ -68,6 +76,7 @@ function drawSegment(segment) {
         context.strokeStyle = 'white';
         context.stroke();
 }
+
 function drawSnake(x, y) {
 
     _.each(snake.segments, function (segment) {
