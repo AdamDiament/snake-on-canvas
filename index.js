@@ -1,6 +1,7 @@
 
 var self = this;
 self.options = {};
+self.score = 0;
 self.options.snakeColour = 'rgba(0, 0, 200, 0.5)';
 self.options.initialSnakeLength = 5;
 self.options.snakeSize = 20;
@@ -100,6 +101,7 @@ function init() {
         var lastSegment;
         if (head.x === snakeFood.x && head.y === snakeFood.y) {
             snakeFood = createSnakeFood();
+            self.score ++;
             var lastSegment = new Segment(head.x,head.y);
         } else {
             var lastSegment = self.snake.segments.pop();
@@ -135,9 +137,12 @@ function init() {
         else if (head.y === self.canvas.height) {
             head.y = 0;
         }
-        }
+    }
+    
         drawSnake();
         drawSegment(snakeFood);
+        self.context.font="20px Georgia";
+        self.context.fillText("Score: " + self.score, 10, 30);
     
     }, 60);
 
