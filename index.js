@@ -96,8 +96,14 @@ function init() {
        
         var dr = self.direction;
         if (dr !== "STOP") {
-        var lastSegment = self.snake.segments.pop();
 
+        var lastSegment;
+        if (head.x === snakeFood.x && head.y === snakeFood.y) {
+            var lastSegment = new Segment(head.x,head.y);
+        } else {
+            var lastSegment = self.snake.segments.pop();
+        }
+    
         lastSegment.x = head.x;
         lastSegment.y = head.y;
 
