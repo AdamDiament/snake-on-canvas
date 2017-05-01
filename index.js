@@ -60,8 +60,8 @@ Number.prototype.FindClosestNumberThatIsDivisibleBy = function(n) {
 };
 
 function createSnakeFood() {
-    var randomY = GetRandomNumberBetween(0,self.canvas.height);
-    var randomX = GetRandomNumberBetween(0,self.canvas.width);
+    var randomY = GetRandomNumberBetween(self.options.snakeSize, self.canvas.height - self.options.snakeSize);
+    var randomX = GetRandomNumberBetween(self.options.snakeSize,self.canvas.width - self.options.snakeSize);
     var snakeFood = new Segment(randomX.FindClosestNumberThatIsDivisibleBy(self.options.snakeSize),randomY.FindClosestNumberThatIsDivisibleBy(self.options.snakeSize));
     console.log("snakeFood",snakeFood);
     return snakeFood;
@@ -94,6 +94,18 @@ function init() {
 
         paintBackground();
         var head = self.snake.segments[0];
+        if (head.x >= self.canvas.width) {
+            head.x = 0;
+        }
+        else if (head.y <= 0) {
+            head.y = self.canvas.height;
+        }
+        else if (head.x <= 0) {
+            head.x = self.canvas.width;
+        }
+        else if (head.y >= self.canvas.height) {
+            head.y = 0;
+        }
        
         var dr = self.direction;
         if (dr !== "STOP") {
@@ -124,26 +136,15 @@ function init() {
         }
 
         self.snake.segments.unshift(lastSegment);
-        head = self.snake.segments[0];
-        if (head.x === self.canvas.width) {
-            head.x = 0;
-        }
-        else if (head.y === 0) {
-            head.y = self.canvas.height;
-        }
-        else if (head.x === 0) {
-            head.x = self.canvas.width;
-        }
-        else if (head.y === self.canvas.height) {
-            head.y = 0;
-        }
+
     }
     
         drawSnake();
         drawSegment(snakeFood);
         self.context.font="20px Georgia";
         self.context.fillText("Score: " + self.score, 10, 30);
-    
+        
+        console.log(self.snake);
     }, 60);
 
 }
