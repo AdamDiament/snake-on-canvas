@@ -70,11 +70,20 @@ function createSnakeFood() {
     return snakeFood;
 }
 
-function drawSegment(segment) {
+function drawSnakeFood (position) {
+
+    var img = new Image();
+    img.onload = function () {
+        context.drawImage(img, position.x, position.y,self.options.snakeSize,self.options.snakeSize);
+    }
+    img.src = "images/apple.jpeg";
+};
+
+function drawSegment(segment,color) {
 
         context.beginPath();
         context.rect(segment.x, segment.y, self.options.snakeSize, self.options.snakeSize);
-        context.fillStyle = self.options.snakeColour;
+        context.fillStyle = color || self.options.snakeColour;
         context.fill();
         context.lineWidth = 1;
         context.strokeStyle = 'white';
@@ -167,7 +176,7 @@ function init() {
     }
 
         drawSnake();
-        drawSegment(snakeFood);
+        drawSegment(snakeFood,'rgba(255, 0, 0, 0.5)');
         self.context.font="20px Georgia";
         self.context.fillText("Score: " + self.score, 10, 30);
         
