@@ -1,12 +1,9 @@
 
 var self = this;
 self.options = {};
-self.score = 0;
 self.options.snakeColour = 'rgba(0, 0, 200, 0.5)';
-self.options.initialSnakeLength = 5;
+self.options.initialSnakeLength = 15;
 self.options.snakeSize = 20;
-
-self.direction = "STOP";
 
 document.onkeydown = function (e) {
     e = e || window.event;
@@ -36,12 +33,18 @@ function Segment(x, y) {
 };
 
 var snake = {};
+
+function createSnake() {
+self.score = 0;
+self.direction = "STOP";
 snake.segments = [];
 var startPos = { x: 200, y: 200 };
 for (var i = 0; i < self.options.initialSnakeLength; i++) {
     snake.segments.push(new Segment(startPos.x, startPos.y));
     startPos.x = startPos.x - self.options.snakeSize;
 }
+};
+
 
 function paintBackground() {
 
@@ -86,14 +89,38 @@ function drawSnake(x, y) {
 
 }
 
+function checkForCrash (head) {
+
+var crashed = false;
+         _.each(self.snake.segments,function (segment,index) {
+            
+            if (head !== segment && head.x === segment.x && head.y === segment.y) {  
+                crashed = true;       
+                return false;
+            }
+            return true;
+        });
+        return crashed;
+};
+
 function init() {
+    createSnake();
     var snakeFood = createSnakeFood();
     var canvas = CanvasService.getCanvas('canvas');
     self.context = canvas.context;
-    setInterval(function () {
+
+    if(typeof self.gameLoop != "undefined") clearInterval(self.gameLoop);
+
+    self.gameLoop = setInterval(function () {
 
         paintBackground();
         var head = self.snake.segments[0];
+        if (checkForCrash(head)) {
+            console.log("crash!");
+            alert("GAME OVER! Score: " + self.score);
+            init();
+            return;
+        }
         if (head.x >= self.canvas.width) {
             head.x = 0;
         }
@@ -138,13 +165,12 @@ function init() {
         self.snake.segments.unshift(lastSegment);
 
     }
-    
+
         drawSnake();
         drawSegment(snakeFood);
         self.context.font="20px Georgia";
         self.context.fillText("Score: " + self.score, 10, 30);
         
-        console.log(self.snake);
     }, 60);
 
 }
