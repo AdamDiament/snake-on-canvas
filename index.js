@@ -99,6 +99,7 @@ function init() {
 
         var lastSegment;
         if (head.x === snakeFood.x && head.y === snakeFood.y) {
+            snakeFood = createSnakeFood();
             var lastSegment = new Segment(head.x,head.y);
         } else {
             var lastSegment = self.snake.segments.pop();
