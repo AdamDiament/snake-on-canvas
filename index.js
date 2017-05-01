@@ -51,9 +51,15 @@ function paintBackground() {
     context.strokeRect(0,0,canvas.width, canvas.height);
 }
 
-function drawSnake(x, y) {
+function createSnakeFood() {
+    var randomY = Math.floor((Math.random() * self.canvas.height) + 1);
+    var randomX = Math.floor((Math.random() * self.canvas.width) + 1);
+    var snakeFood = new Segment(randomX,randomY);
+    return snakeFood;
+}
 
-    _.each(snake.segments, function (segment) {
+function drawSegment(segment) {
+
         context.beginPath();
         context.rect(segment.x, segment.y, self.options.snakeSize, self.options.snakeSize);
         context.fillStyle = self.options.snakeColour;
@@ -61,15 +67,19 @@ function drawSnake(x, y) {
         context.lineWidth = 1;
         context.strokeStyle = 'white';
         context.stroke();
+}
+function drawSnake(x, y) {
+
+    _.each(snake.segments, function (segment) {
+        drawSegment(segment);
     });
 
 }
 
 function init() {
-
+    var snakeFood = createSnakeFood();
     var canvas = CanvasService.getCanvas('canvas');
     self.context = canvas.context;
-
     setInterval(function () {
 
         paintBackground();
@@ -77,23 +87,24 @@ function init() {
        
         var dr = self.direction;
         if (dr !== "STOP") {
-
-        if (dr === "LEFT" && dr !== "RIGHT") {
-            head.x = head.x - self.options.snakeSize;
-        }
-        else if (dr === "RIGHT" && dr !== "LEFT") {
-            head.x = head.x + self.options.snakeSize;
-        }
-        else if (dr === "UP" && dr !== "DOWN") {
-             head.y = head.y - self.options.snakeSize;
-        }
-        else if  (dr === "DOWN" && dr !== "UP") {
-             head.y = head.y + self.options.snakeSize;
-        }
-
         var lastSegment = self.snake.segments.pop();
+
         lastSegment.x = head.x;
         lastSegment.y = head.y;
+
+        if (dr === "LEFT" && dr !== "RIGHT") {
+            lastSegment.x = head.x - self.options.snakeSize;
+        }
+        else if (dr === "RIGHT" && dr !== "LEFT") {
+            lastSegment.x = head.x + self.options.snakeSize;
+        }
+        else if (dr === "UP" && dr !== "DOWN") {
+             lastSegment.y = head.y - self.options.snakeSize;
+        }
+        else if  (dr === "DOWN" && dr !== "UP") {
+             lastSegment.y = head.y + self.options.snakeSize;
+        }
+
         self.snake.segments.unshift(lastSegment);
         head = self.snake.segments[0];
         if (head.x === self.canvas.width) {
@@ -110,7 +121,7 @@ function init() {
         }
         }
         drawSnake();
-        
+        drawSegment(snakeFood);
     
     }, 60);
 
